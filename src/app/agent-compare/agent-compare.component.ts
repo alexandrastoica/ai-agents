@@ -117,6 +117,7 @@ export class AgentCompareComponent implements OnInit, OnDestroy {
   /**
    * Method fired when the user selects a value. This checks which select
    * component was changed by id, and updates the data accordingly.
+   * Refactor to remove duplicated logic.
    */
   change(event): void {
     this.sameAgent = false;
@@ -147,21 +148,22 @@ export class AgentCompareComponent implements OnInit, OnDestroy {
   /**
    * Updates route params (agent1 or agent2) by checking which
    * agent changed.
+   * Refactor to remove duplicate logic.
    */
   updateRoute(agentNo: number): void {
-    if (agentNo === 1) {
+    if (agentNo === 1 && this.agentsToCompare[0]) {
       this.router.navigate([], {
         queryParams: {
-          agent1: this.agentsToCompare[0].name
+          agent1: this.agentsToCompare[0].name.toLowerCase()
         },
         queryParamsHandling: 'merge'
       });
     }
 
-    if (agentNo === 2) {
+    if (agentNo === 2 && this.agentsToCompare[1]) {
       this.router.navigate([], {
         queryParams: {
-          agent2: this.agentsToCompare[1].name
+          agent2: this.agentsToCompare[1].name.toLowerCase()
         },
         queryParamsHandling: 'merge'
       });
