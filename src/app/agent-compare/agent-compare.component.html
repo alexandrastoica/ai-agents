@@ -37,6 +37,9 @@
     <div class="compare-row">
       <div *ngFor="let selectedAgent of agentsToCompare" class="compare-row-col--agent">
         <p>{{selectedAgent?.description}}</p>
+        <a mat-button class="agent-cta" aria-label="Go to agent page" routerLink="/agent/{{selectedAgent.name}}">
+          See agent details <mat-icon>keyboard_arrow_right</mat-icon>
+        </a>
       </div>
     </div>
 
