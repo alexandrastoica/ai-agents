@@ -1,0 +1,79 @@
+<header>
+  <button mat-icon-button aria-label="Go back" (click)="goBack()">
+    <mat-icon>keyboard_arrow_left</mat-icon> Back
+  </button>
+</header>
+<mat-spinner diameter="50" *ngIf="!dataLoaded && !dataError"></mat-spinner>
+<section class="agent-detail-wrapper" *ngIf="dataLoaded">
+  <a routerLink="/compare" [queryParams]="{agent1:agent.name}" mat-fab color="primary" aria-label="Compare agents">
+    <mat-icon>compare_arrows</mat-icon>
+  </a>
+
+  <aside class="agent-detail-info">
+    <h1>{{agent?.name}}</h1>
+    <p>{{agent?.description}}</p>
+
+    <!-- The chips could be used to filter by category and tasks. -->
+    <h4>Category</h4>
+    <mat-divider></mat-divider>
+    <mat-chip-list class="agent-tags" cdkDropList cdkDropListOrientation="horizontal">
+      <mat-chip
+        class="agent-tag"
+        cdkDrag
+        *ngFor="let category of categories">
+        {{category}}
+      </mat-chip>
+    </mat-chip-list>
+
+    <h4>Tasks</h4>
+    <mat-divider></mat-divider>
+    <mat-chip-list class="agent-tags" cdkDropList cdkDropListOrientation="horizontal">
+      <mat-chip class="agent-tag" cdkDrag *ngFor="let task of tasks">
+        {{task.name}}
+      </mat-chip>
+    </mat-chip-list>
+  </aside>
+
+  <div class="agent-detail-data">
+    <h2>Tasks</h2>
+    <mat-divider></mat-divider>
+
+    <table *ngIf="tasks" mat-table [dataSource]="tasks" class="mat-elevation-z8">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef> Category </th>
+        <td mat-cell *matCellDef="let element"> {{element.category | titlecase}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="score">
+        <th mat-header-cell *matHeaderCellDef> Score </th>
+        <td mat-cell *matCellDef="let element"> {{element.score}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <h2>Averages</h2>
+    <mat-divider></mat-divider>
+
+    <table *ngIf="averages" mat-table [dataSource]="averages" class="mat-elevation-z8">
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef> Category </th>
+        <td mat-cell *matCellDef="let element"> {{element.category | titlecase}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="average">
+        <th mat-header-cell *matHeaderCellDef> Average </th>
+        <td mat-cell *matCellDef="let element"> {{element.average | number:'0.2'}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsAvg"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsAvg;"></tr>
+    </table>
+  </div>
+</section>

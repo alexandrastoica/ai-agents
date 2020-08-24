@@ -10,7 +10,7 @@ export interface Agent {
   readonly tasks: Task[];
 }
 
-interface Task {
+export interface Task {
   readonly id: string;
   readonly name: string;
   readonly category: 'memory'|'planning'|'logic';
@@ -207,15 +207,26 @@ export class AgentsApiService {
     return this.agentsAPI.asFallibleAsyncResponse(this.agents);
   }
 
-
   public searchAgents(nameSubstr: string): Promise<ReadonlyArray<Agent>> {
     return this.agentsAPI.asFallibleAsyncResponse(
         this.agents.filter(agent => agent.name.includes(nameSubstr)));
   }
 
-
   public getAgent(id: AgentId): Promise<Agent|undefined> {
-    return this.agentsAPI.asFallibleAsyncResponse(this.agents.find(agent => agent.id === id));
+    return this.agentsAPI.asFallibleAsyncResponse(
+        this.agents.find(agent => agent.id === id));
+  }
+
+  /**
+   * Method for fetching the agents by name. This assumes that the names are unique.
+   * Useful to link to a specific agent detail page via /agent/{{agent.name}}
+   * Pro: Links are easier to remember and recognise with meaningful names
+   * Cons: Duplications of names, possible
+   * Future iteration: link via agent.id which is unique
+   */
+  public getAgentByName(name: string): Promise<Agent|undefined> {
+    return this.agentsAPI.asFallibleAsyncResponse(this.agents.find(
+      agent => agent.name.toLocaleLowerCase() === name.toLocaleLowerCase()));
   }
 }
 

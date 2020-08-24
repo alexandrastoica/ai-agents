@@ -1,0 +1,51 @@
+header {
+  background: #00008c;
+  color: #fff;
+  padding: 20px 64px;
+}
+
+p.error {
+  color: red;
+  margin: 0;
+}
+
+.agent-compare-wrapper {
+  margin: 0 auto;
+  max-width: 1000px;
+  padding: 64px 32px;
+}
+
+.compare-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.compare-row-col {
+  flex: 1;
+}
+
+.compare-row-col .mat-form-field {
+  width: 100%;
+}
+
+.compare-row-col--icon .mat-icon {
+  box-sizing: border-box;
+  line-height: 60px;
+  padding: 0 20px;
+  width: 60px;
+}
+
+.compare-row-col--agent {
+  flex: 1;
+
+  &:last-child {
+    margin-left: 60px;
+  }
+}
+
+.compare-chart {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 32px;
+}

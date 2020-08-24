@@ -1,0 +1,27 @@
+<div class="agent-search">
+  <input class="form-control" type="text" name="search" [(ngModel)]="query" autocomplete="off" placeholder="Search for agents">
+  <a mat-button color="primary" aria-label="Compare" routerLink="/compare">
+    <mat-icon>compare_arrows</mat-icon> Compare
+  </a>
+  <!-- Possible future iterations:
+        sort: sorting agents alphabetically
+        filter: filter agents by tasks, categories
+        grid view: tp change list view to a 3-col grid
+        search with highlight: highlithing the search query
+        search with param: adding a ?q='' param to deeplink to a spefic set, can do similarly with sort, filter, view
+  -->
+</div>
+
+<div class="agent-dashboard-wrapper">
+  <mat-spinner diameter="50" *ngIf="!dataLoaded && !dataError"></mat-spinner>
+  <ul class="agents-list" *ngIf="dataLoaded">
+    <app-agent-card *ngFor="let agent of agents | filter:query" [agent]="agent" routerLink="/agent/{{agent.name}}"></app-agent-card>
+  </ul>
+
+  <!-- This is just a demo. We use pagination element to avoid long pages.
+       There could also be a ?page=n parameter to deeplink to a specific page. -->
+  <mat-paginator [length]="3"
+                [pageSize]="10"
+                [pageSizeOptions]="[5, 10, 25, 100]">
+  </mat-paginator>
+</div>

@@ -1,0 +1,39 @@
+.agent-dashboard-wrapper {
+  margin: 0 auto;
+  max-width: 1000px;
+  padding: 64px 32px;
+}
+
+.agents-list {
+  display: grid;
+  gap: 15px;
+  padding: 0;
+}
+
+.agent-search {
+  background: #00008c;
+  display: flex;
+  justify-content: center;
+  padding: 64px 32px;
+
+  .mat-button {
+    color: #fff;
+  }
+}
+
+.agent-search > input {
+  background: #f4f7fe;
+  border-radius: 5px;
+  border: 0;
+  box-sizing: border-box;
+  font-size: 18px;
+  height: 48px;
+  margin-right: 32px;
+  padding: 10px 20px;
+  width: 60%;
+}
+
+.mat-icon {
+  height: auto;
+  width: auto;
+}

@@ -1,0 +1,47 @@
+<header>
+  <button mat-button aria-label="Go to overview" routerLink="/">
+    <mat-icon>keyboard_arrow_left</mat-icon> Overview
+  </button>
+</header>
+
+<mat-spinner diameter="50" *ngIf="!dataLoaded && !dataError"></mat-spinner>
+
+<div class="agent-compare-wrapper" *ngIf="dataLoaded">
+  <h1>Compare agents</h1>
+  <p>Select two agents to compare their average score</p>
+  <section class="compare-row">
+    <div class="compare-row-col">
+      <mat-form-field appearance="fill">
+        <mat-label>Choose agent</mat-label>
+        <mat-select id="agent-1" (selectionChange)="change($event)" [(ngModel)]="selectedAgent1" [required]="true">
+          <mat-option *ngFor="let agent of agents" [value]=agent.name.toLocaleLowerCase()>{{agent.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="compare-row-col--icon">
+      <mat-icon>compare_arrows</mat-icon>
+    </div>
+    <div class="compare-row-col">
+      <mat-form-field appearance="fill">
+        <mat-label>Choose agent</mat-label>
+        <mat-select id="agent-2" (selectionChange)="change($event)" [(ngModel)]="selectedAgent2" [required]="true">
+          <mat-option *ngFor="let agent of agents" [value]=agent.name.toLocaleLowerCase()>{{agent.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </section>
+  <p class="error" *ngIf="agentsToCompare.length < MAX_AGENTS">Please select 2 agents to compare.</p>
+  <p class="error" *ngIf="sameAgent">Please select 2 different agents to compare.</p>
+
+  <section *ngIf="agentsToCompare.length === MAX_AGENTS && !sameAgent">
+    <div class="compare-row">
+      <div *ngFor="let selectedAgent of agentsToCompare" class="compare-row-col--agent">
+        <p>{{selectedAgent?.description}}</p>
+      </div>
+    </div>
+
+    <div class="compare-chart">
+      <app-agent-compare-chart *ngIf="chartData && agentsToCompare.length === MAX_AGENTS" [data]="chartData"></app-agent-compare-chart>
+    </div>
+  </section>
+</div>
