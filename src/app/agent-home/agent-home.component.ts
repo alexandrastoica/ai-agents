@@ -10,10 +10,10 @@ import { MessageService } from '../message.service';
 })
 export class AgentHomeComponent implements OnInit {
   agents: ReadonlyArray<Agent> = [];
-  selectedAgent: Agent;
-  query: string;
-  dataLoaded = false;
   dataError = false;
+  dataLoaded = false;
+  query: string;
+  selectedAgent: Agent;
 
   constructor(public agentsApiService: AgentsApiService, public messageService: MessageService) {}
 

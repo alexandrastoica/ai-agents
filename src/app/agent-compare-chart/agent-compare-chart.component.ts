@@ -12,8 +12,7 @@ import zingchart from 'zingchart/es6';
   styleUrls: ['./agent-compare-chart.component.scss']
 })
 export class AgentCompareChartComponent implements AfterContentInit, OnChanges {
-  @Input() data;
-  series: zingchart.series = [];
+  @Input() data: [];
   config: zingchart.graphset = {
     type: 'bar',
     backgroundColor: 'transparent',
@@ -42,6 +41,7 @@ export class AgentCompareChartComponent implements AfterContentInit, OnChanges {
       text: 'Fetching data...'
     }
   };
+  series: zingchart.series = [];
 
   constructor() { }
 

@@ -13,13 +13,13 @@ import { ProcessAgentDataService } from '../process-agent-data.service';
 })
 export class AgentDetailComponent implements OnInit {
   @Input() agent: Agent;
+  averages = [];
+  categories: Set<Task['category']>;
+  dataError = false;
+  dataLoaded = false;
   displayedColumns: string[] = ['name', 'category', 'score'];
   displayedColumnsAvg: string[] = ['category', 'average'];
   tasks: Task[] = [];
-  categories: Set<Task['category']>;
-  averages = [];
-  dataLoaded = false;
-  dataError = false;
 
   constructor(private route: ActivatedRoute, private location: Location,
               private agentsApiService: AgentsApiService, private messageService: MessageService,
