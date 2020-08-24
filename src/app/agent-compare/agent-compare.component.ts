@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { Agent, AgentsApiService, Task } from '../agents-api.service';
+import { Agent, AgentsApiService } from '../agents-api.service';
 import { ProcessAgentDataService } from '../process-agent-data.service';
 import { MessageService } from '../message.service';
 import { Subscription } from 'rxjs';
@@ -175,7 +175,7 @@ export class AgentCompareComponent implements OnInit, OnDestroy {
     this.chartData = {};
     if (this.agentsToCompare.length === this.MAX_AGENTS) {
       for (let i = 0; i < this.MAX_AGENTS; i++) {
-        // This needs to pass categories as well, to be used as labels on the x-axis.
+        // This needs to pass categories in as well, to be used as labels on the x-axis.
         this.chartData[this.agentsToCompare[i].name] = this.processAgentDataService.getAverages(this.agentsToCompare[i]);
       }
     }

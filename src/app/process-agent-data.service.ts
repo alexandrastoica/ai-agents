@@ -30,6 +30,7 @@ export class ProcessAgentDataService {
 
   /**
    * Calculates and returns an array with averages for an agent.
+   * Future iteration: calculate meedian and mode if needed.
    */
   public getAverages(agent: Agent): number[] {
     const averages = [];
