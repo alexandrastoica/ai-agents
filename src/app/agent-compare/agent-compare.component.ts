@@ -87,15 +87,15 @@ export class AgentCompareComponent implements OnInit, OnDestroy {
    * Gets agent by name by filtering through agents (assumes names are unique).
    */
   getAgentByName(value: string): Agent {
-    return this.agents.filter(agent => agent.name.toLocaleLowerCase() === value.toLocaleLowerCase())[0];
+    return this.agents.filter(agent => agent.name.toLowerCase() === value.toLowerCase())[0];
   }
 
   /**
    * Sets selected agents names to display in select component.
    */
   setSelectFromParams() {
-    this.selectedAgent1 = this.agentsToCompare[0] ? this.agentsToCompare[0].name.toLocaleLowerCase() : '';
-    this.selectedAgent2 = this.agentsToCompare[1] ? this.agentsToCompare[1].name.toLocaleLowerCase() : '';
+    this.selectedAgent1 = this.agentsToCompare[0] ? this.agentsToCompare[0].name.toLowerCase() : '';
+    this.selectedAgent2 = this.agentsToCompare[1] ? this.agentsToCompare[1].name.toLowerCase() : '';
   }
 
   /**

@@ -14,7 +14,7 @@
       <mat-form-field appearance="fill">
         <mat-label>Choose agent</mat-label>
         <mat-select id="agent-1" (selectionChange)="change($event)" [(ngModel)]="selectedAgent1" [required]="true">
-          <mat-option *ngFor="let agent of agents" [value]=agent.name.toLocaleLowerCase()>{{agent.name}}</mat-option>
+          <mat-option *ngFor="let agent of agents" [value]=agent.name.toLowerCase()>{{agent.name}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
@@ -25,7 +25,7 @@
       <mat-form-field appearance="fill">
         <mat-label>Choose agent</mat-label>
         <mat-select id="agent-2" (selectionChange)="change($event)" [(ngModel)]="selectedAgent2" [required]="true">
-          <mat-option *ngFor="let agent of agents" [value]=agent.name.toLocaleLowerCase()>{{agent.name}}</mat-option>
+          <mat-option *ngFor="let agent of agents" [value]=agent.name.toLowerCase()>{{agent.name}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
