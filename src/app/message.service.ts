@@ -15,16 +15,17 @@ export class MessageService {
   openSnackBar(message: string, action: string = 'Dismiss') {
     const snackBarRef = this.snackBar.open(message, action);
 
-    if (action === 'Retry') {
-      snackBarRef.onAction().subscribe(() =>  {
-        window.location.reload();
-      });
-    }
-
-    if (action === 'Dismiss') {
-      snackBarRef.onAction().subscribe(() =>  {
-        snackBarRef.dismiss();
-      });
+    switch (action) {
+      case 'Retry':
+        snackBarRef.onAction().subscribe(() =>  {
+          window.location.reload();
+        });
+        break;
+      case 'Dismiss':
+        snackBarRef.onAction().subscribe(() =>  {
+          snackBarRef.dismiss();
+        });
+        break;
     }
   }
 }

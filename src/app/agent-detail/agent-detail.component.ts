@@ -13,7 +13,7 @@ import { ProcessAgentDataService } from '../process-agent-data.service';
 })
 export class AgentDetailComponent implements OnInit {
   @Input() agent: Agent;
-  averages = [];
+  averages = {};
   categories: Set<Task['category']>;
   dataError = false;
   dataLoaded = false;
@@ -26,7 +26,14 @@ export class AgentDetailComponent implements OnInit {
               private processAgentDataService: ProcessAgentDataService) { }
 
   ngOnInit(): void {
-    this.getAgent();
+    const state: any = this.location.getState();
+
+    // If the agent data wasn't passed via state, fetch the agent by name.
+    if (state.hasOwnProperty('agent')) {
+      this.setAgent(state.agent);
+    } else {
+      this.fetchAgent();
+    }
   }
 
   // Helper function for navigating back.
@@ -36,23 +43,29 @@ export class AgentDetailComponent implements OnInit {
 
   /**
    * Fetches agend by getting the agent name from the route.
-   * Processes averages and categories.
    * Sets flags to display app status.
    * Sends a global message if the fetch fails.
    */
-  getAgent(): void {
+  fetchAgent(): void {
     const name = this.route.snapshot.paramMap.get('name');
     if (name) {
       this.agentsApiService.getAgentByName(name).then(agent => {
-        this.agent = agent;
-        this.tasks = this.agent.tasks;
-        this.averages = this.processAgentDataService.getAveragesWithCategories(this.agent);
-        this.categories = this.processAgentDataService.getCategories(this.agent);
-        this.dataLoaded = true;
+        this.setAgent(agent);
       }).catch(error => {
         this.dataError = true;
         this.messageService.openSnackBar('Couldn\'t fetch this agent. Please try again.', 'Retry');
       });
     }
+  }
+
+  /**
+   * Set agent data and processes averages and categories.
+   */
+  setAgent(agent: Agent): void {
+    this.agent = agent;
+    this.tasks = this.agent.tasks;
+    this.averages = this.processAgentDataService.getAveragesWithCategories(this.agent);
+    this.categories = this.processAgentDataService.getCategories(this.agent);
+    this.dataLoaded = true;
   }
 }

@@ -1,11 +1,7 @@
-header {
-  background: #00008c;
-  color: #fff;
-  padding: 20px 64px;
-}
-
 .agent-detail-wrapper {
+  background: linear-gradient(90deg, #ffff, 20%, transparent 20%);
   display: flex;
+  max-width: 1280px;
 }
 
 .agent-detail-info {
@@ -26,7 +22,6 @@ header {
 }
 
 .mat-fab {
-  background: #1d27ff;
   bottom: 20px;
   position: fixed;
   right: 20px;
@@ -49,7 +44,7 @@ header {
   .agent-tag {
     background: transparent;
     border-radius: 5px;
-    border: 1px solid blue;
+    border: 1px solid #304ffe;
     font-size: 12px;
     margin: 5px 0;
     padding: 5px 10px;

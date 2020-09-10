@@ -1,11 +1,14 @@
-<header>
-  <button mat-icon-button aria-label="Go back" (click)="goBack()">
-    <mat-icon>keyboard_arrow_left</mat-icon> Back
-  </button>
-</header>
+<mat-toolbar color="primary" class="header">
+  <mat-toolbar-row>
+    <button mat-icon-button aria-label="Go back" (click)="goBack()">
+      <mat-icon>keyboard_arrow_left</mat-icon> Back
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
 <mat-spinner diameter="50" *ngIf="!dataLoaded && !dataError"></mat-spinner>
 <section class="agent-detail-wrapper" *ngIf="dataLoaded">
-  <a routerLink="/compare" [queryParams]="{agent1:agent.name}" mat-fab color="primary" aria-label="Compare agents">
+  <a routerLink="/compare" [queryParams]="{agent1:agent.name.toLowerCase()}" mat-fab color="accent" aria-label="Compare agents">
     <mat-icon>compare_arrows</mat-icon>
   </a>
 

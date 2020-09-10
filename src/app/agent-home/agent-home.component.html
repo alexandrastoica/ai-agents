@@ -1,6 +1,6 @@
 <div class="agent-search">
   <input type="text" name="search" [(ngModel)]="query" placeholder="Search for agents">
-  <a mat-button color="primary" aria-label="Compare" routerLink="/compare">
+  <a mat-flat-button color="primary" aria-label="Compare" routerLink="/compare">
     <mat-icon>compare_arrows</mat-icon> Compare
   </a>
   <!-- Possible future iterations:
@@ -15,7 +15,7 @@
 <div class="agent-dashboard-wrapper">
   <mat-spinner diameter="50" *ngIf="!dataLoaded && !dataError"></mat-spinner>
   <ul class="agents-list" *ngIf="dataLoaded">
-    <app-agent-card *ngFor="let agent of agents | filter:query" [agent]="agent" routerLink="/agent/{{agent.name}}"></app-agent-card>
+    <app-agent-card *ngFor="let agent of agents | filter:query" [agent]="agent" routerLink="/agent/{{agent.name | lowercase}}" [state]="{ agent: agent }"></app-agent-card>
   </ul>
 
   <!-- This is just a demo. We use pagination element to avoid long pages.

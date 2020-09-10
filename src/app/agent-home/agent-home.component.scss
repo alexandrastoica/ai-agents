@@ -11,29 +11,20 @@
 }
 
 .agent-search {
-  background: #00008c;
+  background: #1A237E;
   display: flex;
+  font-family: Lato, sans-serif;
   justify-content: center;
   padding: 64px 32px;
-
-  .mat-button {
-    color: #fff;
-  }
 }
 
 .agent-search > input {
-  background: #f4f7fe;
   border-radius: 5px;
   border: 0;
   box-sizing: border-box;
-  font-size: 18px;
-  height: 48px;
+  font-family: Lato, sans-serif;
+  font-size: 14px;
   margin-right: 32px;
   padding: 10px 20px;
   width: 60%;
-}
-
-.mat-icon {
-  height: auto;
-  width: auto;
 }

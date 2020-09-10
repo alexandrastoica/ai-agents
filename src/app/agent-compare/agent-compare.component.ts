@@ -1,11 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, Params } from '@angular/router';
-import { Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Agent, AgentsApiService } from '../agents-api.service';
 import { ProcessAgentDataService } from '../process-agent-data.service';
 import { MessageService } from '../message.service';
 import { Subscription } from 'rxjs';
+
+import { MatSelectChange } from '@angular/material/select';
+
+type ComparisonAgent = Agent | undefined;
 
 @Component({
   selector: 'app-agent-compare',
@@ -14,46 +17,32 @@ import { Subscription } from 'rxjs';
 })
 export class AgentCompareComponent implements OnInit, OnDestroy {
   MAX_AGENTS = 2; // constant for the number of agents to compare.
+  agentNames: string[] = [];
   agents: ReadonlyArray<Agent> = [];
-  agentsToCompare: Agent[] = [];
+  agentsToCompare: ComparisonAgent[] = [];
   chartData = {};
   dataError = false;
   dataLoaded = false;
-  params: Params = [];
-  possibleParams = ['agent1', 'agent2'];
-  sameAgent = false;
-  selectedAgent1: string;
-  selectedAgent2: string;
+  params: string[];
+  acceptedParams = [];
+  duplicatedAgents = false;
   sub: Subscription;
 
-  constructor(private router: Router, private route: ActivatedRoute, private location: Location,
-              public agentsApiService: AgentsApiService, private processAgentDataService: ProcessAgentDataService,
-              private messageService: MessageService) {}
+  constructor(private router: Router, private route: ActivatedRoute, public agentsApiService: AgentsApiService,
+              private processAgentDataService: ProcessAgentDataService, private messageService: MessageService) {
+
+    this.acceptedParams = [];
+    this.agentsToCompare = [];
+
+    // Setting up params and priming agentsToCompare array.
+    for (let i = 0; i < this.MAX_AGENTS; i++) {
+      this.acceptedParams.push(this.processPramaKey(i + 1));
+      this.agentsToCompare.push(undefined);
+    }
+  }
 
   ngOnInit(): void {
-    this.getAgents();
-  }
-
-  init() {
-    this.setParams();
-    this.setAgentsFromParams();
-  }
-
-  /**
-   * Checks whethen the passed params are accepted and
-   * sets the respective agent.
-   */
-  setAgentsFromParams(): void {
-    for (const [key, value] of Object.entries(this.params)) {
-      if (key === this.possibleParams[0]) {
-        this.setSelectedAgent(0, value);
-      } else if (key === this.possibleParams[1]) {
-        this.setSelectedAgent(1, value);
-      }
-    }
-    this.setSelectFromParams();
-    this.checkIfSameAgent();
-    this.setGroupData();
+    this.fetchAgents();
   }
 
   /**
@@ -63,23 +52,14 @@ export class AgentCompareComponent implements OnInit, OnDestroy {
    *    (assuming names are unique), and fetching only the two agents
    *    needed for comparison.
    */
-  getAgents(): void {
+  fetchAgents(): void {
     this.agentsApiService.listAgents().then(data => {
       this.agents = data;
-      this.init();
       this.dataLoaded = true;
-    }).catch((error) => {
+      this.setFromParams();
+    }).catch(() => {
       this.dataError = true;
       this.messageService.openSnackBar('Couldn\'t fetch agents. Please try again.', 'Retry');
-    });
-  }
-
-  /**
-   * Subscribes to ActivatedRoute to set the params passed via route.
-   */
-  setParams(): void {
-    this.sub = this.route.queryParams.subscribe(params => {
-      this.params = params;
     });
   }
 
@@ -91,83 +71,82 @@ export class AgentCompareComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Sets selected agents names to display in select component.
+   * Subscribes to ActivatedRoute to set the params passed via route.
    */
-  setSelectFromParams() {
-    this.selectedAgent1 = this.agentsToCompare[0] ? this.agentsToCompare[0].name.toLowerCase() : '';
-    this.selectedAgent2 = this.agentsToCompare[1] ? this.agentsToCompare[1].name.toLowerCase() : '';
+  setFromParams(): void {
+    this.sub = this.route.queryParams.subscribe(() => {
+      this.params = [];
+      this.duplicatedAgents = false;
+
+      for (let i = 0; i < this.MAX_AGENTS; i++) {
+        const agentName = this.route.snapshot.queryParamMap.get(this.acceptedParams[i]);
+
+        // If the name is already in the params array,
+        // we have duplicated agents.
+        if (this.params.includes(agentName)) {
+          this.duplicatedAgents = true;
+        }
+
+        if (agentName && !this.params.includes(agentName)) {
+          this.params.push(agentName);
+          this.setSelectedAgent(i, agentName);
+          this.setGroupData();
+        }
+      }
+    });
   }
 
   /**
-   * Sets respective agent by number (either 0 or 1). If agent not found
+   * Sets respective agent by id. If agent not found
    * displays a message to inform the user.
    * This displays a snackbar message instead of an error, because it means
    * the user passed an incorect name in the URL, and to maintain the mental
    * model around failing API calls/not finding data.
    */
-  setSelectedAgent(i: number, name: string) {
+  setSelectedAgent(i: number, name: string): void {
+    // Don't update agents that are already set accordingly.
+    if (this.agentsToCompare[i] && this.agentsToCompare[i].name.toLowerCase() === name) {
+      return;
+    }
+
     const agent = this.getAgentByName(name);
     if (agent) {
       this.agentsToCompare[i] = agent;
     } else {
-      this.messageService.openSnackBar(`Couldn\'t find agent ${i + 1}. Please try another one.`);
+      // If no agent found, display a message.
+      this.messageService.openSnackBar(`Couldn't find agent ${i + 1}.`);
     }
   }
 
   /**
    * Method fired when the user selects a value. This checks which select
-   * component was changed by id, and updates the data accordingly.
-   * Refactor to remove duplicated logic.
+   * component was changed by id, and updates the route accordingly.
    */
-  change(event): void {
-    this.sameAgent = false;
+  selectChanged(event: MatSelectChange): void {
+    this.duplicatedAgents = false;
     const id = event.source.id;
-    if (id === 'agent-1') {
-      this.setSelectedAgent(0, event.value);
-      this.updateRoute(1);
-      this.checkIfSameAgent();
-      this.setGroupData();
-    } else if (id === 'agent-2') {
-      this.setSelectedAgent(1, event.value);
-      this.updateRoute(2);
-      this.checkIfSameAgent();
-      this.setGroupData();
+    const agentNo = +id[id.length - 1];
+    if (!isNaN(agentNo)) {
+      this.updateRoute(agentNo, event.value);
     }
   }
 
   /**
-   * Checks that the user didn't select the same agents to compare.
-   * The flag is used to display an error message.
+   * Updates route accepted params.
    */
-  checkIfSameAgent(): void {
-    if (this.agentsToCompare.length === this.MAX_AGENTS && this.agentsToCompare[0] === this.agentsToCompare[1]) {
-      this.sameAgent = true;
-    }
-  }
-
-  /**
-   * Updates route params (agent1 or agent2) by checking which
-   * agent changed.
-   * Refactor to remove duplicate logic.
-   */
-  updateRoute(agentNo: number): void {
-    if (agentNo === 1 && this.agentsToCompare[0]) {
-      this.router.navigate([], {
-        queryParams: {
-          agent1: this.agentsToCompare[0].name.toLowerCase()
-        },
-        queryParamsHandling: 'merge'
-      });
+  updateRoute(agentNo: number, param: string): void {
+    const key = this.processPramaKey(agentNo);
+    // Ensure the key is in the accepted params.
+    if (!this.acceptedParams.includes(key)) {
+      return;
     }
 
-    if (agentNo === 2 && this.agentsToCompare[1]) {
-      this.router.navigate([], {
-        queryParams: {
-          agent2: this.agentsToCompare[1].name.toLowerCase()
-        },
-        queryParamsHandling: 'merge'
-      });
-    }
+    const queryParams = {};
+    queryParams[key] = param.toLowerCase();
+    this.router.navigate([], {
+      queryParams,
+      queryParamsHandling: 'merge'
+    });
   }
 
   /**
@@ -175,12 +154,28 @@ export class AgentCompareComponent implements OnInit, OnDestroy {
    */
   setGroupData() {
     this.chartData = {};
-    if (this.agentsToCompare.length === this.MAX_AGENTS) {
-      for (let i = 0; i < this.MAX_AGENTS; i++) {
-        // This needs to pass categories in as well, to be used as labels on the x-axis.
-        this.chartData[this.agentsToCompare[i].name] = this.processAgentDataService.getAverages(this.agentsToCompare[i]);
-      }
+
+    // Don't show chart if two agents are the same.
+    if (this.duplicatedAgents) {
+      return;
     }
+
+    // Loop through agents to build chart data.
+    for (let i = 0; i < this.MAX_AGENTS; i++) {
+      // If an agent is not selected, don't show bar chart.
+      if (!this.agentsToCompare[i]) {
+        this.chartData = {};
+        break;
+      }
+
+      this.chartData[this.agentsToCompare[i].name]
+                = this.processAgentDataService.getAveragesWithCategoriesObj(this.agentsToCompare[i]);
+    }
+  }
+
+  // Helper method to generate param key based on agent number.
+  private processPramaKey(n: number): string {
+    return `agent${n}`;
   }
 
   ngOnDestroy() {

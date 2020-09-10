@@ -1,0 +1,14 @@
+<mat-form-field appearance="fill">
+  <mat-label>Choose agent {{agentId + 1}}</mat-label>
+  <mat-select id="agent{{agentId + 1}}" (selectionChange)="selectionChanged($event)" ngModel="{{compareAgent?.name | lowercase}}" [required]="true">
+    <mat-option *ngFor="let agent of agents" [value]=agent.name.toLowerCase()>{{agent.name}}</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<div class="agent-info" *ngIf="!duplicatedAgents">
+  <p class="error" *ngIf="!compareAgent"><mat-icon>warning</mat-icon> Select agent for comparison.</p>
+  <p>{{compareAgent?.description}}</p>
+  <a *ngIf="compareAgent" mat-raised-button color="accent" routerLink="/agent/{{compareAgent?.name | lowercase}}" [state]="{ agent: compareAgent }">
+    See agent details <mat-icon>keyboard_arrow_right</mat-icon>
+  </a>
+</div>

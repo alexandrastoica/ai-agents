@@ -21,11 +21,11 @@ $custom-typography: mat-typography-config(
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$ai-agents-primary: mat-palette($mat-indigo);
-$ai-agents-accent: mat-palette($mat-pink, A200, A100, A400);
+$ai-agents-primary: mat-palette($mat-indigo, 900);
+$ai-agents-accent: mat-palette($mat-indigo, A700);
 
 // The warn palette is optional (defaults to red).
-$ai-agents-warn: mat-palette($mat-red);
+$ai-agents-warn: mat-palette($mat-red, A700);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as `color` or `typography`.
@@ -37,8 +37,5 @@ $ai-agents-theme: mat-light-theme($ai-agents-primary, $ai-agents-accent, $ai-age
 @include angular-material-theme($ai-agents-theme);
 
 /* You can add global styles to this file, and also import other style files */
-@import './assets/css/common.scss';
-
 html { height: 100%; }
-
 body { min-height: 100%; margin: 0; font-family: Lato, "Helvetica Neue", sans-serif; background: #F5F7FF; }
